@@ -46,6 +46,8 @@ namespace DelagatesExercise
             success = campaignHandler(this.GetAddressesOfNewProspects());
             return success;
         }
+
+        // this is addition I have made to the file during a review
     }
 
     public class BallpenCompany
