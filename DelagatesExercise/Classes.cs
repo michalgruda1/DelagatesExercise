@@ -6,28 +6,29 @@ using System.Threading.Tasks;
 
 namespace DelagatesExercise
 {
-    // public delegate bool SendGifts(List<CustomerAddress>);
+    public delegate bool Handler(List<CustomerAddress> listOfCustomerAddresses);
 
     public class MarketingDepertment
     {
         public bool RunMarketingCampaign(decimal budget)
         {
-            // SendGifts CampaignHandler;
             bool success = false;
             AddressProvider addressProvider = new AddressProvider();
-            List<CustomerAddress> customerAddresses = addressProvider.GetAddressesOfNewProspects();
+            Handler campaignHandler; // initialize delegate class
+
             if (budget > 10000)
             {
-                CoffeeCupCompany someCoffeeCupCompany = new CoffeeCupCompany(); 
-                success = someCoffeeCupCompany.SendCoffeeCups(customerAddresses);
-                return success;
+                CoffeeCupCompany coffeeCupCompany = new CoffeeCupCompany();
+                campaignHandler = coffeeCupCompany.SendCoffeeCups;
             }
             else
             {
-                BallpenCompany someBallpenCompany = new BallpenCompany();
-                success = someBallpenCompany.SendBallPens(customerAddresses);
-                return success;
+                BallpenCompany ballpenCompany = new BallpenCompany();
+                campaignHandler = ballpenCompany.SendBallPens;
             }
+            success = addressProvider.HandleCampaign(campaignHandler); // wrap the actual method in delegate and let the AddressProvider do the work
+
+            return success;
         }
     }
 
@@ -37,6 +38,13 @@ namespace DelagatesExercise
         {
             List < CustomerAddress > listOfCustomerAddresses = new List<CustomerAddress>();
             return listOfCustomerAddresses;
+        }
+
+        public bool HandleCampaign(Handler campaignHandler)
+        {
+            bool success = false;
+            success = campaignHandler(this.GetAddressesOfNewProspects());
+            return success;
         }
     }
 
