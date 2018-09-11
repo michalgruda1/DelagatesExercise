@@ -47,7 +47,8 @@ namespace DelagatesExercise
             return success;
         }
 
-        // this is addition I have made to the file during a review
+        // this is addition I have made to the file during a review    
+        // new addition
     }
 
     public class BallpenCompany
