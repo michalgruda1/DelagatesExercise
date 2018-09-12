@@ -6,49 +6,54 @@ using System.Threading.Tasks;
 
 namespace DelagatesExercise
 {
-    public delegate bool Handler(List<CustomerAddress> listOfCustomerAddresses);
+    public delegate bool SendCoffeeCups(List<CustomerAddress> customerAddresses);
+    public delegate bool SendBallpens(List<CustomerAddress> customerAddresses);
 
     public class MarketingDepertment
     {
         public bool RunMarketingCampaign(decimal budget)
         {
             bool success = false;
-            AddressProvider addressProvider = new AddressProvider();
-            Handler campaignHandler; // initialize delegate class
+            AddressProvider AddressProvider = new AddressProvider();
+            List<CustomerAddress> listOfCustomersAddresses = AddressProvider.GetAddressesOfNewProspects();
+
+            // Handler campaignHandler; // initialize delegate class
 
             if (budget > 10000)
             {
-                CoffeeCupCompany coffeeCupCompany = new CoffeeCupCompany();
-                campaignHandler = coffeeCupCompany.SendCoffeeCups;
+                success = AddressProvider.MySendCoffeeCups(listOfCustomersAddresses);
             }
             else
             {
-                BallpenCompany ballpenCompany = new BallpenCompany();
-                campaignHandler = ballpenCompany.SendBallPens;
+                success = AddressProvider.MySendBallpens(listOfCustomersAddresses);
             }
-            success = addressProvider.HandleCampaign(campaignHandler); // wrap the actual method in delegate and let the AddressProvider do the work
-
             return success;
         }
     }
 
     public class AddressProvider
     {
+        private CoffeeCupCompany CoffeeCupCompany;
+        private BallpenCompany BallpenCompany;
+
+        // initiate delegates
+        public SendBallpens MySendBallpens;
+        public SendCoffeeCups MySendCoffeeCups;
+
         public List<CustomerAddress> GetAddressesOfNewProspects()
         {
             List < CustomerAddress > listOfCustomerAddresses = new List<CustomerAddress>();
             return listOfCustomerAddresses;
         }
 
-        public bool HandleCampaign(Handler campaignHandler)
+        public AddressProvider()
         {
-            bool success = false;
-            success = campaignHandler(this.GetAddressesOfNewProspects());
-            return success;
+            CoffeeCupCompany = new CoffeeCupCompany();
+            BallpenCompany = new BallpenCompany();
+            // wrap handling in delagates
+            MySendBallpens = BallpenCompany.SendBallPens;
+            MySendCoffeeCups = CoffeeCupCompany.SendCoffeeCups;
         }
-
-        // this is addition I have made to the file during a review    
-        // new addition
     }
 
     public class BallpenCompany
